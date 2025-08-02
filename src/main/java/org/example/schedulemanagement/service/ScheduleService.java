@@ -3,10 +3,14 @@ package org.example.schedulemanagement.service;
 import lombok.RequiredArgsConstructor;
 import org.example.schedulemanagement.dto.ScheduleRequest;
 import org.example.schedulemanagement.dto.ScheduleResponse;
+import org.example.schedulemanagement.dto.ScheduleResponseSecret;
 import org.example.schedulemanagement.entity.Schedule;
 import org.example.schedulemanagement.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +37,24 @@ public class ScheduleService {
                 saveSchedule.getUpdateTime()
         );
     }
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResponseSecret> allSchedules() {
+        List<Schedule> schedules = scheduleRepository.findAll();
+        List<ScheduleResponseSecret> scheduleList = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            scheduleList.add(new ScheduleResponseSecret(
+                    schedule.getId(),
+                    schedule.getTitle(),
+                    schedule.getDescription(),
+                    schedule.getUserName(),
+                    schedule.getCreateTime(),
+                    schedule.getUpdateTime()
+            ));
+        }
+        return scheduleList;
+    }
 }
-//
-//### Lv 1. 일정 생성  `필수`
-//
-//- [ ]  **일정 생성(일정 작성하기)**
-//        - [ ]  `작성/수정일`은 날짜와 시간을 모두 포함한 형태
-//    - [ ]  각 일정의 고유 식별자(ID)를 자동으로 생성하여 관리
-//    - [ ]  최초 생성 시, `수정일`은 `작성일`과 동일
-//    - [ ]  API 응답에 `비밀번호`는 제외해야 합니다.
-//
 //### Lv 2. 일정 조회  `필수`
 //
 //- [ ]  **전체 일정 조회**

@@ -14,7 +14,7 @@ public class Schedule extends DateEntity{
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    private Long id;// 각 일정의 고유 식별자(ID)를 자동으로 생성하여 관리
     private String title; // 일정 제목
     private String description; // 일정 내용
     private String userName; // 작성자명
