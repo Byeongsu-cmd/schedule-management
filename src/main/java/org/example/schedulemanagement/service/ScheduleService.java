@@ -1,8 +1,9 @@
 package org.example.schedulemanagement.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.example.schedulemanagement.dto.ScheduleRequest;
-import org.example.schedulemanagement.dto.ScheduleResponse;
+import org.example.schedulemanagement.dto.SchedulePostRequest;
+import org.example.schedulemanagement.dto.SchedulePostResponse;
 import org.example.schedulemanagement.dto.ScheduleResponseSecret;
 import org.example.schedulemanagement.entity.Schedule;
 import org.example.schedulemanagement.repository.ScheduleRepository;
@@ -19,15 +20,15 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public ScheduleResponse createSchedule(ScheduleRequest scheduleRequest) {
+    public SchedulePostResponse createSchedule(SchedulePostRequest schedulePostRequest) {
         Schedule schedule = new Schedule(
-                scheduleRequest.getTitle(),
-                scheduleRequest.getDescription(),
-                scheduleRequest.getUserName(),
-                scheduleRequest.getPassword());
+                schedulePostRequest.getTitle(),
+                schedulePostRequest.getDescription(),
+                schedulePostRequest.getUserName(),
+                schedulePostRequest.getPassword());
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
-        return new ScheduleResponse(
+        return new SchedulePostResponse(
                 saveSchedule.getId(),
                 saveSchedule.getTitle(),
                 saveSchedule.getDescription(),
@@ -54,7 +55,23 @@ public class ScheduleService {
         }
         return scheduleList;
     }
+
+    @Transactional(readOnly = true)
+    public ScheduleResponseSecret findScheduleById(Long id) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.")
+        );
+        return new ScheduleResponseSecret(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getDescription(),
+                schedule.getUserName(),
+                schedule.getCreateTime(),
+                schedule.getUpdateTime()
+        );
+    }
 }
+
 //### Lv 2. 일정 조회  `필수`
 //
 //- [ ]  **전체 일정 조회**

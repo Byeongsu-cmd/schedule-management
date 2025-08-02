@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class DateEntity {
+
     //`작성일`, `수정일` 필드는 `JPA Auditing`을 활용하여 적용합니다.
     @CreatedDate
     @Column(updatable = false)
