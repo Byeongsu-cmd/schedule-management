@@ -1,8 +1,8 @@
 package org.example.schedulemanagement.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.schedulemanagement.dto.SchedulePostRequest;
-import org.example.schedulemanagement.dto.SchedulePostResponse;
+import org.example.schedulemanagement.dto.ScheduleRequest;
+import org.example.schedulemanagement.dto.ScheduleResponse;
 import org.example.schedulemanagement.dto.ScheduleResponseSecret;
 import org.example.schedulemanagement.service.ScheduleService;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +18,10 @@ public class ScheduleController {
 
     // 일정 생성
     @PostMapping("/schedules")
-    public ResponseEntity<SchedulePostResponse> createSchedule(
-            @RequestBody SchedulePostRequest schedulePostRequest
+    public ResponseEntity<ScheduleResponse> createSchedule(
+            @RequestBody ScheduleRequest scheduleRequest
     ) {
-        return ResponseEntity.ok(scheduleService.createSchedule(schedulePostRequest));
+        return ResponseEntity.ok(scheduleService.createSchedule(scheduleRequest));
     }
 
     // 일정 전체 조회
@@ -32,7 +32,7 @@ public class ScheduleController {
 
     // 일정 단일 조회
     @GetMapping("/schedules/{scheduleId}")
-    public ResponseEntity<ScheduleResponseSecret>  findScheduleById(
+    public ResponseEntity<ScheduleResponseSecret> findScheduleById(
             @PathVariable Long scheduleId
     ) {
         return ResponseEntity.ok(scheduleService.findScheduleById(scheduleId));

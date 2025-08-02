@@ -2,8 +2,8 @@ package org.example.schedulemanagement.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.example.schedulemanagement.dto.SchedulePostRequest;
-import org.example.schedulemanagement.dto.SchedulePostResponse;
+import org.example.schedulemanagement.dto.ScheduleRequest;
+import org.example.schedulemanagement.dto.ScheduleResponse;
 import org.example.schedulemanagement.dto.ScheduleResponseSecret;
 import org.example.schedulemanagement.entity.Schedule;
 import org.example.schedulemanagement.repository.ScheduleRepository;
@@ -20,15 +20,15 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public SchedulePostResponse createSchedule(SchedulePostRequest schedulePostRequest) {
+    public ScheduleResponse createSchedule(ScheduleRequest scheduleRequest) {
         Schedule schedule = new Schedule(
-                schedulePostRequest.getTitle(),
-                schedulePostRequest.getDescription(),
-                schedulePostRequest.getUserName(),
-                schedulePostRequest.getPassword());
+                scheduleRequest.getTitle(),
+                scheduleRequest.getDescription(),
+                scheduleRequest.getUserName(),
+                scheduleRequest.getPassword());
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
-        return new SchedulePostResponse(
+        return new ScheduleResponse(
                 saveSchedule.getId(),
                 saveSchedule.getTitle(),
                 saveSchedule.getDescription(),

@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class SchedulePostResponse {
+public class ScheduleResponse {
 
     private final Long id; //일정 고유 번호
     private final String title; // 일정 제목
@@ -15,7 +15,14 @@ public class SchedulePostResponse {
     private final LocalDateTime createTime; // 작성일
     private final LocalDateTime updateTime; // 수정일
 
-    public SchedulePostResponse(Long id, String title, String description, String userName, String password, LocalDateTime createTime, LocalDateTime updateTime) {
+    public ScheduleResponse(
+            Long id, String title,
+            String description,
+            String userName,
+            String password,
+            LocalDateTime createTime,
+            LocalDateTime updateTime
+    ) {
         this.id = id;
         this.title = title;
         this.description = description;
