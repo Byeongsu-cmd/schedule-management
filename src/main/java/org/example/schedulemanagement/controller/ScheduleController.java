@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.schedulemanagement.dto.ScheduleRequest;
 import org.example.schedulemanagement.dto.ScheduleResponse;
 import org.example.schedulemanagement.dto.ScheduleResponseSecret;
+import org.example.schedulemanagement.dto.ScheduleUpdateRequest;
 import org.example.schedulemanagement.service.ScheduleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class ScheduleController {
     // 일정 전체 조회
     @GetMapping("/schedules")
     public ResponseEntity<List<ScheduleResponseSecret>> getAllSchedules(
-            @RequestParam (required = false) String userName
+            @RequestParam(required = false) String userName
     ) { // 작성자명은 조회 조건으로 포함될 수도 있고, 포함되지 않을 수도 있습니다. 기능 추가해야합니다.
         return ResponseEntity.ok(scheduleService.allSchedules(userName));
     }
@@ -40,6 +41,14 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.findScheduleById(scheduleId));
     }
     // 일정 수정
+
+    @PatchMapping("/schedules/{scheduleId}") //부분 수정이기 때문에 Put이 아닌 Patch사용
+    public ResponseEntity<ScheduleResponseSecret> updateSchedule(
+            @PathVariable Long scheduleId,
+            @RequestBody ScheduleUpdateRequest scheduleUpdateRequest
+    ) {
+        return ResponseEntity.ok(scheduleService.updateSchedule(scheduleId,scheduleUpdateRequest));
+    }
 
     // 일정 삭제
 }

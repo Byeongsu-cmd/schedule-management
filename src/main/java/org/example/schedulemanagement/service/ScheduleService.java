@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.schedulemanagement.dto.ScheduleRequest;
 import org.example.schedulemanagement.dto.ScheduleResponse;
 import org.example.schedulemanagement.dto.ScheduleResponseSecret;
+import org.example.schedulemanagement.dto.ScheduleUpdateRequest;
 import org.example.schedulemanagement.entity.Schedule;
 import org.example.schedulemanagement.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -75,14 +75,34 @@ public class ScheduleService {
                 schedule.getUpdateTime()
         );
     }
+
+    @Transactional
+    public ScheduleResponseSecret updateSchedule(Long id, ScheduleUpdateRequest updateRequest) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
+        );
+        if (schedule.getPassword().equals(updateRequest.getPassword())) { // 작성글의 비밀번호와 매칭하여 맞으면 수정 허용
+            schedule.ScheduleUpdate(updateRequest.getTitle(),updateRequest.getUserName());
+        }
+        return new ScheduleResponseSecret(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getDescription(),
+                schedule.getUserName(),
+                schedule.getCreateTime(),
+                schedule.getUpdateTime()
+        );
+    }
+
+    @Transactional
+    public void deleteScheduleById(Long id) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
+        );
+        scheduleRepository.delete(schedule);
+    }
 }
-//### Lv 3. 일정 수정  `필수`
-//
-//- [ ]  **선택한 일정 수정**
-//    - [ ]  선택한 일정 내용 중 `일정 제목`, `작성자명` 만 수정 가능
-//        - [ ]  서버에 일정 수정을 요청할 때 `비밀번호`를 함께 전달합니다.
-//        - [ ]  `작성일` 은 변경할 수 없으며, `수정일` 은 수정 완료 시, 수정한 시점으로 변경되어야 합니다.
-//    - [ ]  API 응답에 `비밀번호`는 제외해야 합니다.
+
 //
 //### Lv 4. 일정 삭제  `필수`
 //

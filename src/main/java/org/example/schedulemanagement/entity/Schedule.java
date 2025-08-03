@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.example.schedulemanagement.dto.ScheduleUpdateRequest;
 
 @Entity
 @Getter
@@ -25,5 +26,10 @@ public class Schedule extends DateEntity {
         this.description = description;
         this.userName = userName;
         this.password = password;
+    }
+
+    public void ScheduleUpdate(String title, String userName) {
+        this.title = title;
+        this.userName = userName;
     }
 }
