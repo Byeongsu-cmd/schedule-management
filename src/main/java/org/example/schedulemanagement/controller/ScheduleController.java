@@ -26,8 +26,10 @@ public class ScheduleController {
 
     // 일정 전체 조회
     @GetMapping("/schedules")
-    public ResponseEntity<List<ScheduleResponseSecret>> getAllSchedules() { // 작성자명은 조회 조건으로 포함될 수도 있고, 포함되지 않을 수도 있습니다. 기능 추가해야합니다.
-        return ResponseEntity.ok(scheduleService.allSchedules());
+    public ResponseEntity<List<ScheduleResponseSecret>> getAllSchedules(
+            @RequestParam (required = false) String userName
+    ) { // 작성자명은 조회 조건으로 포함될 수도 있고, 포함되지 않을 수도 있습니다. 기능 추가해야합니다.
+        return ResponseEntity.ok(scheduleService.allSchedules(userName));
     }
 
     // 일정 단일 조회

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +40,16 @@ public class ScheduleService {
         );
     }
 
-    @Transactional(readOnly = true)
-    public List<ScheduleResponseSecret> allSchedules() {
-        List<Schedule> schedules = scheduleRepository.findAll();
-        List<ScheduleResponseSecret> scheduleList = new ArrayList<>();
-        for (Schedule schedule : schedules) {
-            scheduleList.add(new ScheduleResponseSecret(
+    @Transactional(readOnly = true) // get은 오직 읽기만 하기 때문에 readOnly을 사용한다.
+    public List<ScheduleResponseSecret> allSchedules(String userName) {
+        List<Schedule> schedules = scheduleRepository.findAll(); // repository의 저장 값을 가져와 새로운 List에 담는다.
+        if (userName != null && !userName.isEmpty()) { // 유저명을 입력받고 && 유저명이 비어있지 않을 때
+            schedules = scheduleRepository.findByUserNameOrderByUpdateTimeDesc(userName); // 유저명을 받았을 때 입력받은 유저명에 매치되는 저장 값들을 수정시가으로 내림차순으로 정렬한다.
+        }
+
+        List<ScheduleResponseSecret> scheduleList = new ArrayList<>(); // 출력 값의 타입을 매칭하기 위해 새로우 ArrayList를 생성한다.
+        for (Schedule schedule : schedules) { // ArrayList에 저장 값을 하나씩 옮겨준다.
+            scheduleList.add(new ScheduleResponseSecret( // 조건에서 비밀번호는 출력하면 안된다고하여 responseSecret 클래스를 사용한다.
                     schedule.getId(),
                     schedule.getTitle(),
                     schedule.getDescription(),
@@ -59,7 +64,7 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public ScheduleResponseSecret findScheduleById(Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.")
+                () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") // 예외 처리
         );
         return new ScheduleResponseSecret(
                 schedule.getId(),
@@ -71,20 +76,6 @@ public class ScheduleService {
         );
     }
 }
-
-//### Lv 2. 일정 조회  `필수`
-//
-//- [ ]  **전체 일정 조회**
-//    - [ ]  `작성자명`을 기준으로 등록된 일정 목록을 전부 조회
-//        - [ ]  `작성자명`은 조회 조건으로 포함될 수도 있고, 포함되지 않을 수도 있습니다.
-//        - [ ]  하나의 API로 작성해야 합니다.
-//    - [ ]  `수정일` 기준 내림차순으로 정렬
-//    - [ ]  API 응답에 `비밀번호`는 제외해야 합니다.
-//- [ ]  **선택 일정 조회**
-//    - [ ]  선택한 일정 단건의 정보를 조회할 수 있습니다.
-//        - [ ]  일정의 고유 식별자(ID)를 사용하여 조회합니다.
-//    - [ ]  API 응답에 `비밀번호`는 제외해야 합니다.
-//
 //### Lv 3. 일정 수정  `필수`
 //
 //- [ ]  **선택한 일정 수정**
