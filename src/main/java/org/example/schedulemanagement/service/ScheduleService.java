@@ -20,6 +20,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
+    // 일정 생성
     @Transactional
     public ScheduleResponseSecret createSchedule(ScheduleRequest scheduleRequest) {
         Schedule schedule = new Schedule(
@@ -29,7 +30,7 @@ public class ScheduleService {
                 scheduleRequest.getPassword());
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
-        return new ScheduleResponseSecret(
+        return new ScheduleResponseSecret( // 비밀번호는 출력되면 안되기 때문에 비밀번호는 제외
                 saveSchedule.getId(),
                 saveSchedule.getTitle(),
                 saveSchedule.getDescription(),
@@ -39,6 +40,7 @@ public class ScheduleService {
         );
     }
 
+    // 일정 조회 (작성자 이름을 쿼리문으로 작성하여 같은 이름의 작성자가 적은 글을 모두 조회 가능)
     @Transactional(readOnly = true) // get은 오직 읽기만 하기 때문에 readOnly을 사용한다.
     public List<ScheduleResponseSecret> allSchedules(String userName) {
         List<Schedule> schedules = scheduleRepository.findAll(); // repository의 저장 값을 가져와 새로운 List에 담는다.
@@ -60,12 +62,13 @@ public class ScheduleService {
         return scheduleList;
     }
 
+    // 일정 단건 조회
     @Transactional(readOnly = true)
     public ScheduleResponseSecret findScheduleById(Long id) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") // 예외 처리
         );
-        return new ScheduleResponseSecret(
+        return new ScheduleResponseSecret( // 비밀번호는 출력되면 안되기 때문에 비밀번호는 제외
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getDescription(),
@@ -75,16 +78,17 @@ public class ScheduleService {
         );
     }
 
+    // 일정 수정
     @Transactional
     public ScheduleResponseSecret updateSchedule(Long id, ScheduleUpdateRequest updateRequest) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
         );
         if (!schedule.getPassword().equals(updateRequest.getPassword())) {// 작성글의 비밀번호와 매칭하여 맞으면 수정 허용
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다."); // 비밀번호가 맞지 않을 경우 예외 처리
         }
         schedule.ScheduleUpdate(updateRequest.getTitle(), updateRequest.getUserName());
-        return new ScheduleResponseSecret(
+        return new ScheduleResponseSecret( // 비밀번호는 출력되면 안되기 때문에 비밀번호는 제외
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getDescription(),
@@ -94,13 +98,14 @@ public class ScheduleService {
         );
     }
 
+    // 일정 삭제
     @Transactional
     public void deleteScheduleById(Long id, ScheduleRequestPassword scheduleRequestPassword) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
         );
         if (!schedule.getPassword().equals(scheduleRequestPassword.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다."); // 비밀번호가 맞지 않을 경우 예외 처리
         }
         scheduleRepository.deleteById(id);
 
@@ -136,6 +141,3 @@ public class ScheduleService {
 //    - [ ]  `댓글 내용`은 최대 100자 이내로 제한, 필수값 처리
 //    - [ ]  `비밀번호`, `작성자명`은 필수값 처리
 //    - [ ]  `비밀번호`가 일치하지 않을 경우 적절한 오류 코드 및 메세지를 반환해야 합니다.
-
-//1. 3 Layer Architecture(Controller, Service, Repository)를 적절히 적용했는지 확인해 보고, 왜 이러한 구조가 필요한지 작성해 주세요.
-//2. `@RequestParam`, `@PathVariable`, `@RequestBody` 이 각각 어떤 어노테이션인지, 어떤 특징을 갖고 있는지 작성해 주세요.

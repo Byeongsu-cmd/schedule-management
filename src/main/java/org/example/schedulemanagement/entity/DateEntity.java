@@ -17,10 +17,10 @@ public class DateEntity {
     @CreatedDate
     @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createTime;
+    private LocalDateTime createTime; // 생성시간
 
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime updateTime;
+    private LocalDateTime updateTime; // 수정시간
 
 }

@@ -11,3 +11,13 @@ API 명세서
 
 ERD
 ![img_1.png](img_1.png)
+
+설명 
+- 
+
+
+
+
+
+//1. 3 Layer Architecture(Controller, Service, Repository)를 적절히 적용했는지 확인해 보고, 왜 이러한 구조가 필요한지 작성해 주세요.
+//2. `@RequestParam`, `@PathVariable`, `@RequestBody` 이 각각 어떤 어노테이션인지, 어떤 특징을 갖고 있는지 작성해 주세요.

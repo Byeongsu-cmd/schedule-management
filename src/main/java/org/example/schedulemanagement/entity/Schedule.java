@@ -6,7 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.example.schedulemanagement.dto.ScheduleUpdateRequest;
 
 @Entity
 @Getter
