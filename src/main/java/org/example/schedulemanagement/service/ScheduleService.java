@@ -81,7 +81,7 @@ public class ScheduleService {
                 () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
         );
         if (!schedule.getPassword().equals(updateRequest.getPassword())) {// 작성글의 비밀번호와 매칭하여 맞으면 수정 허용
-            throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         schedule.ScheduleUpdate(updateRequest.getTitle(), updateRequest.getUserName());
         return new ScheduleResponseSecret(
@@ -100,7 +100,7 @@ public class ScheduleService {
                 () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
         );
         if (!schedule.getPassword().equals(scheduleRequestPassword.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         scheduleRepository.deleteById(id);
 
