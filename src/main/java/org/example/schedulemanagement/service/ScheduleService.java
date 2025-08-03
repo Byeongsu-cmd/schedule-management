@@ -3,7 +3,7 @@ package org.example.schedulemanagement.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.example.schedulemanagement.dto.ScheduleRequest;
-import org.example.schedulemanagement.dto.ScheduleResponse;
+import org.example.schedulemanagement.dto.ScheduleRequestPassword;
 import org.example.schedulemanagement.dto.ScheduleResponseSecret;
 import org.example.schedulemanagement.dto.ScheduleUpdateRequest;
 import org.example.schedulemanagement.entity.Schedule;
@@ -21,7 +21,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public ScheduleResponse createSchedule(ScheduleRequest scheduleRequest) {
+    public ScheduleResponseSecret createSchedule(ScheduleRequest scheduleRequest) {
         Schedule schedule = new Schedule(
                 scheduleRequest.getTitle(),
                 scheduleRequest.getDescription(),
@@ -29,12 +29,11 @@ public class ScheduleService {
                 scheduleRequest.getPassword());
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
-        return new ScheduleResponse(
+        return new ScheduleResponseSecret(
                 saveSchedule.getId(),
                 saveSchedule.getTitle(),
                 saveSchedule.getDescription(),
                 saveSchedule.getUserName(),
-                saveSchedule.getPassword(),
                 saveSchedule.getCreateTime(),
                 saveSchedule.getUpdateTime()
         );
@@ -81,9 +80,10 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
         );
-        if (schedule.getPassword().equals(updateRequest.getPassword())) { // 작성글의 비밀번호와 매칭하여 맞으면 수정 허용
-            schedule.ScheduleUpdate(updateRequest.getTitle(),updateRequest.getUserName());
+        if (!schedule.getPassword().equals(updateRequest.getPassword())) {// 작성글의 비밀번호와 매칭하여 맞으면 수정 허용
+            throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
         }
+        schedule.ScheduleUpdate(updateRequest.getTitle(), updateRequest.getUserName());
         return new ScheduleResponseSecret(
                 schedule.getId(),
                 schedule.getTitle(),
@@ -95,21 +95,17 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void deleteScheduleById(Long id) {
+    public void deleteScheduleById(Long id, ScheduleRequestPassword scheduleRequestPassword) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("입력하신 " + id + "번은 존재하지 않습니다.") //예외 처리
         );
-        scheduleRepository.delete(schedule);
+        if (!schedule.getPassword().equals(scheduleRequestPassword.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
+        }
+        scheduleRepository.deleteById(id);
+
     }
 }
-
-//
-//### Lv 4. 일정 삭제  `필수`
-//
-//- [ ]  **선택한 일정 삭제**
-//    - [ ]  선택한 일정을 삭제할 수 있습니다.
-//        - [ ]  서버에 일정 삭제을 요청할 때 `비밀번호`를 함께 전달합니다.
-
 //### Lv 5. 댓글 생성 `도전`
 //
 //- [ ]  **댓글 생성(댓글 작성하기)**
