@@ -19,6 +19,7 @@ API 명세서
 ![img_3.png](img_3.png)
 
 ERD
+
 ![img_2.png](img_2.png)
 
 주요 기능
@@ -29,26 +30,7 @@ ERD
 - 일정 삭제 (고유 식별자 Id로 찾은 후 비밀번호 매칭 후 삭제)
 
 패키지 구조
-java
-    └── main
-       └── org
-          └── example
-               └── schedulemanagement
-                     ├── ScheduleManagementApplication.class
-                     ├── controller
-                     │   └── ScheduleController.class
-                     ├── dto
-                     │   ├── ScheduleRequest.class
-                     │   ├── ScheduleRequestPassword.class
-                     │   ├── ScheduleResponseSecret.class
-                     │   └── ScheduleUpdateRequest.class
-                     ├── entity
-                     │   ├── DateEntity.class
-                     │   └── Schedule.class
-                     ├── repository
-                     │   └── ScheduleRepository.class
-                     └── service
-                         └── ScheduleService.class
+![img.png](img.png)
 
 실행 방법
 - ScheduleManagementApplication 실행 후 포스트맨을 연동하여 각 기능의 맞는 입력 값을 입력 후 저장 및 출력 확인
